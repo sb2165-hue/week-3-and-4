@@ -1,48 +1,42 @@
 import java.util.*;
 
-class Asset {
-    String name;
-    double returnRate;
-    double volatility;
-
-    Asset(String name, double returnRate, double volatility) {
-        this.name = name;
-        this.returnRate = returnRate;
-        this.volatility = volatility;
-    }
-
-    public String toString() {
-        return name + ":" + returnRate;
-    }
-}
-
 public class week3and4 {
 
-    // Merge Sort (ascending return)
-    public static void mergeSort(List<Asset> list) {
-        list.sort(Comparator.comparingDouble(a -> a.returnRate));
+    public static int linearSearch(String[] arr, String target) {
+        int comparisons = 0;
+        for (int i = 0; i < arr.length; i++) {
+            comparisons++;
+            if (arr[i].equals(target)) {
+                System.out.println("Linear found at " + i + " comps=" + comparisons);
+                return i;
+            }
+        }
+        return -1;
     }
 
-    // Quick Sort (desc return, asc volatility)
-    public static void quickSort(List<Asset> list) {
-        list.sort((a, b) -> {
-            if (a.returnRate != b.returnRate)
-                return Double.compare(b.returnRate, a.returnRate);
-            return Double.compare(a.volatility, b.volatility);
-        });
+    public static int binarySearch(String[] arr, String target) {
+        int low = 0, high = arr.length - 1, comps = 0;
+
+        while (low <= high) {
+            comps++;
+            int mid = (low + high) / 2;
+
+            if (arr[mid].equals(target)) {
+                System.out.println("Binary found at " + mid + " comps=" + comps);
+                return mid;
+            }
+            if (arr[mid].compareTo(target) < 0)
+                low = mid + 1;
+            else
+                high = mid - 1;
+        }
+        return -1;
     }
 
     public static void main(String[] args) {
-        List<Asset> list = Arrays.asList(
-                new Asset("AAPL", 12, 3),
-                new Asset("TSLA", 8, 5),
-                new Asset("GOOG", 15, 2)
-        );
+        String[] arr = {"accA", "accB", "accB", "accC"};
 
-        mergeSort(list);
-        System.out.println("Merge: " + list);
-
-        quickSort(list);
-        System.out.println("Quick: " + list);
+        linearSearch(arr, "accB");
+        binarySearch(arr, "accB");
     }
 }
