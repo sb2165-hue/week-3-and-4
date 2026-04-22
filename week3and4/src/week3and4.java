@@ -1,72 +1,66 @@
 import java.util.*;
 
-class Client {
-    String name;
-    int riskScore;
-    double balance;
-
-    Client(String name, int riskScore, double balance) {
-        this.name = name;
-        this.riskScore = riskScore;
-        this.balance = balance;
-    }
-
-    public String toString() {
-        return name + ":" + riskScore;
-    }
-}
-
 public class week3and4 {
 
-    // Bubble Sort (ascending risk)
-    public static void bubbleSort(Client[] arr) {
-        int swaps = 0;
-
-        for (int i = 0; i < arr.length - 1; i++) {
-            for (int j = 0; j < arr.length - i - 1; j++) {
-                if (arr[j].riskScore > arr[j + 1].riskScore) {
-                    Client temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                    swaps++;
-                }
-            }
+    // Merge Sort
+    public static void mergeSort(int[] arr, int l, int r) {
+        if (l < r) {
+            int m = (l + r) / 2;
+            mergeSort(arr, l, m);
+            mergeSort(arr, m + 1, r);
+            merge(arr, l, m, r);
         }
-        System.out.println("Bubble Sort: " + Arrays.toString(arr) + " Swaps=" + swaps);
     }
 
-    // Insertion Sort (desc risk)
-    public static void insertionSort(Client[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            Client key = arr[i];
-            int j = i - 1;
+    static void merge(int[] arr, int l, int m, int r) {
+        int[] temp = new int[r - l + 1];
+        int i = l, j = m + 1, k = 0;
 
-            while (j >= 0 && arr[j].riskScore < key.riskScore) {
-                arr[j + 1] = arr[j];
-                j--;
-            }
-            arr[j + 1] = key;
+        while (i <= m && j <= r) {
+            temp[k++] = (arr[i] <= arr[j]) ? arr[i++] : arr[j++];
         }
-        System.out.println("Insertion Sort DESC: " + Arrays.toString(arr));
+
+        while (i <= m) temp[k++] = arr[i++];
+        while (j <= r) temp[k++] = arr[j++];
+
+        for (i = 0; i < temp.length; i++) {
+            arr[l + i] = temp[i];
+        }
     }
 
-    public static void topClients(Client[] arr, int k) {
-        System.out.print("Top " + k + ": ");
-        for (int i = 0; i < k && i < arr.length; i++) {
-            System.out.print(arr[i] + " ");
+    // Quick Sort DESC
+    public static void quickSort(int[] arr, int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
         }
-        System.out.println();
+    }
+
+    static int partition(int[] arr, int low, int high) {
+        int pivot = arr[high];
+        int i = low - 1;
+
+        for (int j = low; j < high; j++) {
+            if (arr[j] > pivot) {
+                i++;
+                int temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+            }
+        }
+        int temp = arr[i + 1]; arr[i + 1] = arr[high]; arr[high] = temp;
+        return i + 1;
     }
 
     public static void main(String[] args) {
-        Client[] arr = {
-                new Client("C", 80, 5000),
-                new Client("A", 20, 2000),
-                new Client("B", 50, 3000)
-        };
+        int[] arr = {500, 100, 300};
 
-        bubbleSort(arr.clone());
-        insertionSort(arr);
-        topClients(arr, 3);
+        mergeSort(arr, 0, arr.length - 1);
+        System.out.println("MergeSort: " + Arrays.toString(arr));
+
+        quickSort(arr, 0, arr.length - 1);
+        System.out.println("QuickSort DESC: " + Arrays.toString(arr));
+
+        int total = Arrays.stream(arr).sum();
+        System.out.println("Total Volume: " + total);
     }
 }
