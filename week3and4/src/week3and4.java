@@ -1,66 +1,48 @@
 import java.util.*;
 
+class Asset {
+    String name;
+    double returnRate;
+    double volatility;
+
+    Asset(String name, double returnRate, double volatility) {
+        this.name = name;
+        this.returnRate = returnRate;
+        this.volatility = volatility;
+    }
+
+    public String toString() {
+        return name + ":" + returnRate;
+    }
+}
+
 public class week3and4 {
 
-    // Merge Sort
-    public static void mergeSort(int[] arr, int l, int r) {
-        if (l < r) {
-            int m = (l + r) / 2;
-            mergeSort(arr, l, m);
-            mergeSort(arr, m + 1, r);
-            merge(arr, l, m, r);
-        }
+    // Merge Sort (ascending return)
+    public static void mergeSort(List<Asset> list) {
+        list.sort(Comparator.comparingDouble(a -> a.returnRate));
     }
 
-    static void merge(int[] arr, int l, int m, int r) {
-        int[] temp = new int[r - l + 1];
-        int i = l, j = m + 1, k = 0;
-
-        while (i <= m && j <= r) {
-            temp[k++] = (arr[i] <= arr[j]) ? arr[i++] : arr[j++];
-        }
-
-        while (i <= m) temp[k++] = arr[i++];
-        while (j <= r) temp[k++] = arr[j++];
-
-        for (i = 0; i < temp.length; i++) {
-            arr[l + i] = temp[i];
-        }
-    }
-
-    // Quick Sort DESC
-    public static void quickSort(int[] arr, int low, int high) {
-        if (low < high) {
-            int pi = partition(arr, low, high);
-            quickSort(arr, low, pi - 1);
-            quickSort(arr, pi + 1, high);
-        }
-    }
-
-    static int partition(int[] arr, int low, int high) {
-        int pivot = arr[high];
-        int i = low - 1;
-
-        for (int j = low; j < high; j++) {
-            if (arr[j] > pivot) {
-                i++;
-                int temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
-            }
-        }
-        int temp = arr[i + 1]; arr[i + 1] = arr[high]; arr[high] = temp;
-        return i + 1;
+    // Quick Sort (desc return, asc volatility)
+    public static void quickSort(List<Asset> list) {
+        list.sort((a, b) -> {
+            if (a.returnRate != b.returnRate)
+                return Double.compare(b.returnRate, a.returnRate);
+            return Double.compare(a.volatility, b.volatility);
+        });
     }
 
     public static void main(String[] args) {
-        int[] arr = {500, 100, 300};
+        List<Asset> list = Arrays.asList(
+                new Asset("AAPL", 12, 3),
+                new Asset("TSLA", 8, 5),
+                new Asset("GOOG", 15, 2)
+        );
 
-        mergeSort(arr, 0, arr.length - 1);
-        System.out.println("MergeSort: " + Arrays.toString(arr));
+        mergeSort(list);
+        System.out.println("Merge: " + list);
 
-        quickSort(arr, 0, arr.length - 1);
-        System.out.println("QuickSort DESC: " + Arrays.toString(arr));
-
-        int total = Arrays.stream(arr).sum();
-        System.out.println("Total Volume: " + total);
+        quickSort(list);
+        System.out.println("Quick: " + list);
     }
 }
